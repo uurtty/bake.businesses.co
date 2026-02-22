@@ -1,0 +1,473 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>bake.businesses.co - Digital Web Studios</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Animation Library -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css"/>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Playfair+Display:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --sq-off-white: #f7f7f7;
+            --sq-dark: #1a1a1a;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: var(--sq-off-white);
+            color: var(--sq-dark);
+            overflow-x: hidden;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        .serif { font-family: 'Playfair Display', serif; }
+
+        /* Page Transition Effect */
+        .page-node {
+            display: none;
+            min-height: 100vh;
+        }
+        .page-node.active {
+            display: block;
+        }
+
+        /* Nav underline animation */
+        .nav-link {
+            position: relative;
+            transition: opacity 0.3s ease;
+        }
+        .nav-link::after {
+            content: '';
+            position: absolute;
+            width: 0;
+            height: 1px;
+            bottom: -2px;
+            left: 0;
+            background-color: var(--sq-dark);
+            transition: width 0.3s ease;
+        }
+        .nav-link:hover::after { width: 100%; }
+
+        /* Custom smooth entrance */
+        .reveal {
+            opacity: 0;
+            transform: translateY(30px);
+            transition: all 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+        .reveal.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .step-content { display: none; }
+        .step-content.active { display: block; }
+
+        /* --- CUSTOM HAND-DRAWN BUTTON STYLES --- */
+        .button {
+            position: relative;
+            text-align: center;
+            transition: 0.3s ease-in-out;
+            cursor: pointer;
+            background-color: transparent;
+            filter: url(#handDrawnNoise);
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            user-select: none;
+            font-family: "Inter", sans-serif; /* Adjusted to match site */
+            font-size: 0.85rem;
+            letter-spacing: 0.1em;
+            font-weight: bold;
+            padding: 1.2em 2.5em;
+            border-width: 0px;
+            border-radius: 2rem;
+            box-shadow: #33333333 4px 4px 0 1px;
+            animation: idle 1s infinite ease-in-out;
+            text-transform: uppercase;
+        }
+
+        .highlight {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            fill: rgba(255, 225, 0, 0.4);
+            stroke: rgba(255, 225, 0, 0.4);
+            stroke-width: 10;
+            stroke-linecap: round;
+            pointer-events: none;
+            stroke-dasharray: 1000;
+            stroke-dashoffset: 1000;
+            transition: stroke-dashoffset 0.5s ease-in-out;
+        }
+
+        @keyframes idle {
+            0% { filter: url(#handDrawnNoise); }
+            50% { rotate: 2.5deg; filter: url(#handDrawnNoise2); }
+            100% { filter: url(#handDrawnNoise); }
+        }
+
+        .button-cosm {
+            fill: #33333333;
+            transition: 0.3s ease-out;
+            scale: 0.35;
+            position: absolute;
+            left: 0;
+            top: 50%;
+            transform: translate(-60%, -50%);
+            pointer-events: none;
+        }
+
+        .button:hover {
+            rotate: -2.5deg;
+            animation: hover 2.5s infinite ease-in-out;
+        }
+
+        .button:hover .highlight { stroke-dashoffset: 0; }
+
+        .button:active .highlight {
+            stroke-dashoffset: 1000;
+            animation: highlight 5s infinite, col 0.5s forwards;
+            stroke: #bc4e2666;
+        }
+
+        @keyframes col {
+            0% { stroke: rgba(255, 225, 0, 0.5); }
+            100% { stroke: #1c98eb66; }
+        }
+
+        @keyframes highlight {
+            0% { stroke-dashoffset: 0; }
+            25% { stroke-dashoffset: 1000; }
+            50% { stroke-dashoffset: 1000; }
+            100% { stroke-dashoffset: 0; }
+        }
+
+        @keyframes hover {
+            0% { rotate: 0deg; filter: url(#handDrawnNoise); translate: 0 0px; }
+            25% { rotate: -1deg; filter: url(#handDrawnNoise2); translate: 0 -2px; }
+            50% { rotate: 0deg; filter: url(#handDrawnNoise); translate: 0 2px; }
+            75% { rotate: -1deg; filter: url(#handDrawnNoise2); translate: 0 -2px; }
+            100% { rotate: 0deg; filter: url(#handDrawnNoise); translate: 0 0px; }
+        }
+
+        .button:hover .button-cosm {
+            rotate: -15deg;
+        }
+
+        .button:active .button-cosm {
+            fill: #333333f1;
+            rotate: -135deg;
+        }
+
+        .button:active {
+            box-shadow: inset #333333f1 4px 4px 0 1px;
+            rotate: -2.5deg;
+            animation: active 1s infinite ease-in-out;
+        }
+
+        @keyframes active {
+            0% { filter: url(#handDrawnNoiset); translate: 0 -1px; }
+            25% { rotate: -3deg; }
+            50% { filter: url(#handDrawnNoiset2); translate: 0 1px; }
+            66% { rotate: 1.5deg; }
+            100% { filter: url(#handDrawnNoiset); translate: 0 -1px; }
+        }
+
+        /* Chatbot Styles */
+        #chat-widget {
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            transform: translateY(20px);
+            opacity: 0;
+            pointer-events: none;
+        }
+        #chat-widget.active {
+            transform: translateY(0);
+            opacity: 1;
+            pointer-events: auto;
+        }
+        .chat-bubble {
+            max-width: 80%;
+            border-radius: 18px;
+            padding: 10px 16px;
+            margin-bottom: 8px;
+            font-size: 14px;
+            line-height: 1.4;
+        }
+        .bot-msg { background: #e5e7eb; color: #1f2937; border-bottom-left-radius: 4px; }
+        .user-msg { background: #1a1a1a; color: white; border-bottom-right-radius: 4px; margin-left: auto; }
+    </style>
+</head>
+<body>
+
+    <!-- SVG Filters for Buttons -->
+    <svg height="0" width="0" style="position:absolute">
+      <filter id="handDrawnNoise">
+        <feTurbulence result="noise" numOctaves="8" baseFrequency="0.1" type="fractalNoise"></feTurbulence>
+        <feDisplacementMap yChannelSelector="G" xChannelSelector="R" scale="3" in2="noise" in="SourceGraphic"></feDisplacementMap>
+      </filter>
+      <filter id="handDrawnNoise2">
+        <feTurbulence result="noise" numOctaves="8" baseFrequency="0.1" seed="1010" type="fractalNoise"></feTurbulence>
+        <feDisplacementMap yChannelSelector="G" xChannelSelector="R" scale="3" in2="noise" in="SourceGraphic"></feDisplacementMap>
+      </filter>
+      <filter id="handDrawnNoiset">
+        <feTurbulence result="noise" numOctaves="8" baseFrequency="0.1" type="fractalNoise"></feTurbulence>
+        <feDisplacementMap yChannelSelector="G" xChannelSelector="R" scale="6" in2="noise" in="SourceGraphic"></feDisplacementMap>
+      </filter>
+      <filter id="handDrawnNoiset2">
+        <feTurbulence result="noise" numOctaves="8" baseFrequency="0.1" seed="1010" type="fractalNoise"></feTurbulence>
+        <feDisplacementMap yChannelSelector="G" xChannelSelector="R" scale="6" in2="noise" in="SourceGraphic"></feDisplacementMap>
+      </filter>
+    </svg>
+
+    <!-- Persistent Navigation -->
+    <nav class="fixed top-0 w-full z-50 px-8 py-6 flex justify-between items-center bg-white/90 backdrop-blur-md border-b border-gray-100">
+        <div class="text-xl tracking-tighter font-semibold animate__animated animate__fadeIn">
+            <a href="javascript:void(0)" onclick="navigateTo('home')">bake.businesses.co</a>
+        </div>
+        
+        <div class="hidden md:flex space-x-10 text-[11px] font-medium tracking-widest uppercase">
+            <a href="javascript:void(0)" onclick="navigateTo('home')" class="nav-link">Home</a>
+            <a href="javascript:void(0)" onclick="navigateTo('about')" class="nav-link">About Us</a>
+            <a href="javascript:void(0)" onclick="navigateTo('onboarding')" class="nav-link">Build</a>
+            <a href="javascript:void(0)" onclick="navigateTo('faq')" class="nav-link">FAQ</a>
+            <a href="javascript:void(0)" onclick="navigateTo('help')" class="nav-link">Help</a>
+        </div>
+
+        <button id="menu-btn" class="md:hidden p-2">
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><line x1="4" x2="20" y1="12" y2="12"></line><line x1="4" x2="20" y1="6" y2="6"></line><line x1="4" x2="20" y1="18" y2="18"></line></svg>
+        </button>
+    </nav>
+
+    <!-- Page: HOME -->
+    <section id="page-home" class="page-node active pt-40 pb-20 px-8 animate__animated animate__fadeIn">
+        <div class="max-w-7xl mx-auto">
+            <div class="grid grid-cols-1 lg:grid-cols-12 gap-12 items-center">
+                <div class="lg:col-span-5">
+                    <h1 class="serif text-6xl md:text-7xl leading-tight mb-8 animate__animated animate__slideInLeft">
+                        We bake <br>
+                        <span class="italic text-gray-400">better websites.</span>
+                    </h1>
+                    <p class="text-lg text-gray-600 max-w-md mb-10 leading-relaxed animate__animated animate__fadeIn animate__delay-1s">
+                        Crafting digital presence with the same care and precision as a master baker handles dough. 
+                    </p>
+                    
+                    <!-- NEW BUTTON STYLE -->
+                    <button class="button" onclick="navigateTo('onboarding')">
+                      <svg class="button-cosm" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 256 256" width="128" height="128">
+                        <path d="M243.07324,157.43945c-1.2334-1.47949-23.18847-27.34619-60.46972-41.05859-1.67579-17.97412-8.25293-34.36328-18.93653-46.87158C149.41309,52.8208,128.78027,44,104,44,54.51074,44,22.10059,88.57715,20.74512,90.4751a3.99987,3.99987,0,0,0,6.50781,4.65234C27.5625,94.6958,58.68359,52,104,52c22.36816,0,40.89648,7.85107,53.584,22.70508,8.915,10.437,14.65625,23.9541,16.65528,38.894A133.54185,133.54185,0,0,0,136,108c-25.10742,0-46.09473,6.48486-60.69434,18.75391-12.65234,10.63379-19.91015,25.39355-19.91015,40.49463a43.61545,43.61545,0,0,0,12.69336,31.21923C76.98438,207.3208,89.40234,212,104,212c23.98047,0,44.37305-9.4668,58.97461-27.37744,12.74512-15.6333,20.05566-37.145,20.05566-59.01953,0-.1128-.001-.22559-.001-.33838,33.62988,13.48486,53.62207,36.96631,53.89746,37.2959a4.00015,4.00015,0,0,0,6.14648-5.1211ZM104,204c-27.89746,0-40.60449-19.05078-40.60449-36.75146C63.39551,142.56592,86.11621,116,136,116a124.37834,124.37834,0,0,1,38.97266,6.32617q.05712,1.63038.05761,3.27686C175.03027,177.07129,139.29785,204,104,204Z"></path>
+                      </svg>
+                      <svg class="highlight" viewBox="0 0 144.75738 77.18431" preserveAspectRatio="none">
+                        <g transform="translate(-171.52826,-126.11624)">
+                          <g fill="none" stroke-width="17" stroke-linecap="round" stroke-miterlimit="10">
+                            <path d="M180.02826,169.45123c0,0 12.65228,-25.55115 24.2441,-25.66863c6.39271,-0.06479 -5.89143,46.12943 4.90937,50.63857c10.22345,4.2681 24.14292,-52.38336 37.86455,-59.80493c3.31715,-1.79413 -5.35094,45.88889 -0.78872,58.34589c5.19371,14.18125 33.36934,-58.38221 36.43049,-56.91633c4.67078,2.23667 -0.06338,44.42744 5.22574,47.53647c6.04041,3.55065 19.87185,-20.77286 19.87185,-20.77286"></path>
+                          </g>
+                        </g>
+                      </svg>
+                      Start Your Journey
+                    </button>
+
+                </div>
+                <div class="lg:col-span-7 overflow-hidden rounded-sm shadow-2xl animate__animated animate__zoomIn">
+                    <img src="https://images.unsplash.com/photo-1509440159596-0249088772ff?auto=format&fit=crop&q=80&w=2072" class="w-full h-[500px] object-cover hover:scale-110 transition-transform duration-1000">
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Page: ABOUT -->
+    <section id="page-about" class="page-node pt-40 pb-20 px-8">
+        <div class="max-w-4xl mx-auto text-center reveal">
+            <h2 class="serif text-5xl mb-12">Our Recipe for Success</h2>
+            <p class="text-xl text-gray-600 leading-loose mb-12">
+                At <span class="font-bold">bake.businesses.co</span>, we believe a website is like a sourdough starter—it needs the right environment, the best ingredients, and constant attention to grow into something incredible. 
+            </p>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-12 text-left">
+                <div class="p-8 border border-gray-200">
+                    <h4 class="serif text-2xl mb-4">The Knead</h4>
+                    <p class="text-sm text-gray-500">We dig deep into your business goals to understand exactly what your audience is hungry for.</p>
+                </div>
+                <div class="p-8 border border-gray-200">
+                    <h4 class="serif text-2xl mb-4">The Rise</h4>
+                    <p class="text-sm text-gray-500">We develop and optimize your site until it's light, fast, and ready for the world.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Page: ONBOARDING -->
+    <section id="page-onboarding" class="page-node pt-40 pb-20 px-8 bg-white">
+        <div class="max-w-3xl mx-auto reveal">
+            <div class="text-center mb-16">
+                <h2 class="serif text-4xl mb-4">Tell Us Your Story</h2>
+                <div class="w-16 h-1 bg-black mx-auto mb-4"></div>
+                <p class="text-gray-500 uppercase tracking-widest text-[10px]">Step-by-step business profile</p>
+            </div>
+
+            <div id="step-form" class="bg-gray-50 p-8 md:p-12 rounded-sm border border-gray-100 shadow-sm relative overflow-hidden">
+                <!-- Step Contents -->
+                <div class="step-content active" data-step="1">
+                    <h3 class="serif text-2xl mb-6">1. Identity</h3>
+                    <input type="text" placeholder="Business Name" class="w-full p-4 mb-4 border-b border-gray-200 bg-transparent focus:border-black outline-none">
+                    <textarea placeholder="Your Mission Statement" class="w-full p-4 border-b border-gray-200 bg-transparent focus:border-black outline-none h-32"></textarea>
+                </div>
+                <!-- Other steps (2-5) omitted for brevity but logic remains same in JS -->
+                <div class="step-content" data-step="2"><h3 class="serif text-2xl mb-6">2. Audience</h3><textarea placeholder="Who are your customers?" class="w-full p-4 border-b border-gray-200 bg-transparent focus:border-black outline-none h-48"></textarea></div>
+                <div class="step-content" data-step="3"><h3 class="serif text-2xl mb-6">3. Values</h3><input type="text" placeholder="Primary Value" class="w-full p-4 border-b border-gray-200 bg-transparent focus:border-black outline-none"></div>
+                <div class="step-content" data-step="4"><h3 class="serif text-2xl mb-6">4. Products</h3><textarea placeholder="What do you offer?" class="w-full p-4 border-b border-gray-200 bg-transparent focus:border-black outline-none h-48"></textarea></div>
+                <div class="step-content" data-step="5"><h3 class="serif text-2xl mb-6">5. Main Goal</h3><select class="w-full p-4 border-b border-gray-200 bg-transparent focus:border-black outline-none"><option>Sell Products</option><option>Get Leads</option></select></div>
+
+                <div class="flex justify-between items-center mt-12 pt-8 border-t border-gray-200">
+                    <button id="prev-btn" class="text-xs uppercase tracking-widest opacity-0 hover:underline">Back</button>
+                    
+                    <button id="next-btn" class="button">
+                        <svg class="button-cosm" viewBox="0 0 256 256"><path d="M243.07324,157.43945c-1.2334-1.47949-23.18847-27.34619-60.46972-41.05859-1.67579-17.97412-8.25293-34.36328-18.93653-46.87158C149.41309,52.8208,128.78027,44,104,44,54.51074,44,22.10059,88.57715,20.74512,90.4751a3.99987,3.99987,0,0,0,6.50781,4.65234C27.5625,94.6958,58.68359,52,104,52c22.36816,0,40.89648,7.85107,53.584,22.70508,8.915,10.437,14.65625,23.9541,16.65528,38.894A133.54185,133.54185,0,0,0,136,108c-25.10742,0-46.09473,6.48486-60.69434,18.75391-12.65234,10.63379-19.91015,25.39355-19.91015,40.49463a43.61545,43.61545,0,0,0,12.69336,31.21923C76.98438,207.3208,89.40234,212,104,212c23.98047,0,44.37305-9.4668,58.97461-27.37744,12.74512-15.6333,20.05566-37.145,20.05566-59.01953,0-.1128-.001-.22559-.001-.33838,33.62988,13.48486,53.62207,36.96631,53.89746,37.2959a4.00015,4.00015,0,0,0,6.14648-5.1211ZM104,204c-27.89746,0-40.60449-19.05078-40.60449-36.75146C63.39551,142.56592,86.11621,116,136,116a124.37834,124.37834,0,0,1,38.97266,6.32617q.05712,1.63038.05761,3.27686C175.03027,177.07129,139.29785,204,104,204Z"></path></svg>
+                        <svg class="highlight" viewBox="0 0 144.75738 77.18431" preserveAspectRatio="none"><g transform="translate(-171.52826,-126.11624)"><g fill="none" stroke-width="17" stroke-linecap="round" stroke-miterlimit="10"><path d="M180.02826,169.45123c0,0 12.65228,-25.55115 24.2441,-25.66863c6.39271,-0.06479 -5.89143,46.12943 4.90937,50.63857c10.22345,4.2681 24.14292,-52.38336 37.86455,-59.80493c3.31715,-1.79413 -5.35094,45.88889 -0.78872,58.34589c5.19371,14.18125 33.36934,-58.38221 36.43049,-56.91633c4.67078,2.23667 -0.06338,44.42744 5.22574,47.53647c6.04041,3.55065 19.87185,-20.77286 19.87185,-20.77286"></path></g></g></svg>
+                        <span id="next-text">Next Step</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Page: FAQ -->
+    <section id="page-faq" class="page-node pt-40 pb-20 px-8">
+        <div class="max-w-3xl mx-auto reveal">
+            <h2 class="serif text-5xl mb-4 text-center">Frequently Asked</h2>
+            <div class="space-y-6 mt-16">
+                <div class="border-b border-gray-200 pb-6">
+                    <h4 class="serif text-xl mb-3">How long does it take to bake a website?</h4>
+                    <p class="text-gray-600 text-sm leading-relaxed">Typically, 2 to 4 weeks depending on ingredients.</p>
+                </div>
+                <div class="border-b border-gray-200 pb-6">
+                    <h4 class="serif text-xl mb-3">Can I update the content myself?</h4>
+                    <p class="text-gray-600 text-sm leading-relaxed">Yes! We use user-friendly tools for our bakers.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Page: HELP -->
+    <section id="page-help" class="page-node pt-40 pb-20 px-8">
+        <div class="max-w-7xl mx-auto text-center reveal">
+            <h2 class="serif text-4xl mb-12">Support Center</h2>
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+                <div class="bg-white p-10 shadow-sm border border-gray-100 hover:shadow-xl transition-shadow cursor-pointer" onclick="toggleChat()">
+                    <div class="text-3xl mb-4">💬</div>
+                    <h5 class="font-bold mb-2">Chat Bot</h5>
+                </div>
+                <!-- Other help items... -->
+                <div class="bg-white p-10 shadow-sm border border-gray-100 hover:shadow-xl transition-shadow cursor-pointer" onclick="navigateTo('faq')">
+                    <div class="text-3xl mb-4">❓</div>
+                    <h5 class="font-bold mb-2">FAQ</h5>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Chat Bot Widget -->
+    <div id="chat-widget" class="fixed bottom-8 right-8 w-80 md:w-96 bg-white shadow-2xl rounded-xl z-[100] border border-gray-100 overflow-hidden">
+        <div class="bg-black p-4 text-white flex justify-between items-center">
+            <div class="flex items-center space-x-3">
+                <div class="w-8 h-8 bg-gray-700 rounded-full flex items-center justify-center text-lg">👩‍🍳</div>
+                <div><p class="text-xs font-bold leading-none">BakeBot</p><p class="text-[10px] text-gray-400">Online</p></div>
+            </div>
+            <button onclick="toggleChat()" class="text-white hover:text-gray-400"><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" x2="6" y1="6" y2="18"></line><line x1="6" x2="18" y1="6" y2="18"></line></svg></button>
+        </div>
+        <div id="chat-body" class="h-80 overflow-y-auto p-4 bg-gray-50 flex flex-col space-y-2">
+            <div class="chat-bubble bot-msg">Welcome to the bakery! How can I assist you?</div>
+        </div>
+        <div class="p-4 bg-white border-t border-gray-100 flex space-x-2">
+            <input id="chat-input" type="text" placeholder="Type a message..." class="flex-1 text-sm outline-none">
+            <button onclick="sendMessage()" class="bg-black text-white px-3 py-1 rounded text-xs">Send</button>
+        </div>
+    </div>
+
+    <!-- Chat Trigger (Floating Button) -->
+    <button onclick="toggleChat()" class="fixed bottom-8 right-8 w-14 h-14 bg-black text-white rounded-full shadow-xl z-[90] flex items-center justify-center hover:scale-110 transition-transform">
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path></svg>
+    </button>
+
+    <!-- Footer -->
+    <footer class="py-20 px-8 border-t border-gray-200 bg-white">
+        <div class="max-w-7xl mx-auto flex flex-col md:flex-row justify-between items-center text-center md:text-left">
+            <div><h3 class="serif text-2xl mb-2">bake.businesses.co</h3><p class="text-xs text-gray-400 uppercase tracking-widest">&copy; 2024</p></div>
+            <div class="flex space-x-8 mt-8 md:mt-0 text-xs uppercase tracking-widest"><a href="#" class="hover:text-gray-400">Instagram</a><a href="#" class="hover:text-gray-400">Privacy</a></div>
+        </div>
+    </footer>
+
+    <script>
+        function navigateTo(pageId) {
+            document.querySelectorAll('.page-node').forEach(page => {
+                page.classList.remove('active', 'animate__animated', 'animate__fadeIn');
+            });
+            const target = document.getElementById('page-' + pageId);
+            target.classList.add('active', 'animate__animated', 'animate__fadeIn');
+            window.scrollTo(0, 0);
+            handleScrollReveal();
+        }
+
+        function handleScrollReveal() {
+            const reveals = document.querySelectorAll('.reveal');
+            reveals.forEach(el => {
+                const elementTop = el.getBoundingClientRect().top;
+                if (elementTop < window.innerHeight - 100) el.classList.add('visible');
+            });
+        }
+        window.addEventListener('scroll', handleScrollReveal);
+
+        // ONBOARDING
+        let currentStep = 1;
+        const totalSteps = 5;
+        const nextBtn = document.getElementById('next-btn');
+        const nextText = document.getElementById('next-text');
+        const prevBtn = document.getElementById('prev-btn');
+        const contents = document.querySelectorAll('.step-content');
+
+        function updateOnboarding() {
+            contents.forEach(content => {
+                content.classList.remove('active', 'animate__animated', 'animate__fadeInRight');
+                if(parseInt(content.dataset.step) === currentStep) content.classList.add('active', 'animate__animated', 'animate__fadeInRight');
+            });
+            prevBtn.style.opacity = currentStep === 1 ? '0' : '1';
+            prevBtn.style.pointerEvents = currentStep === 1 ? 'none' : 'auto';
+            nextText.innerHTML = currentStep === totalSteps ? 'Finish Recipe' : 'Next Step';
+        }
+
+        nextBtn.addEventListener('click', () => {
+            if(currentStep < totalSteps) { currentStep++; updateOnboarding(); }
+            else { alert("Success! Recipe sent."); navigateTo('home'); }
+        });
+        prevBtn.addEventListener('click', () => { if(currentStep > 1) { currentStep--; updateOnboarding(); } });
+
+        // CHATBOT
+        function toggleChat() { document.getElementById('chat-widget').classList.toggle('active'); }
+        function sendMessage() {
+            const input = document.getElementById('chat-input');
+            const body = document.getElementById('chat-body');
+            if (input.value.trim() === "") return;
+            const uMsg = document.createElement('div');
+            uMsg.className = "chat-bubble user-msg animate__animated animate__fadeInUp";
+            uMsg.innerText = input.value;
+            body.appendChild(uMsg);
+            input.value = "";
+            body.scrollTop = body.scrollHeight;
+            setTimeout(() => {
+                const bMsg = document.createElement('div');
+                bMsg.className = "chat-bubble bot-msg animate__animated animate__fadeIn";
+                bMsg.innerText = "That sounds great! I'll let the head chef know.";
+                body.appendChild(bMsg);
+                body.scrollTop = body.scrollHeight;
+            }, 800);
+        }
+        document.getElementById('chat-input').addEventListener('keypress', (e) => { if (e.key === 'Enter') sendMessage(); });
+
+        setTimeout(handleScrollReveal, 500);
+    </script>
+</body>
+</html>
